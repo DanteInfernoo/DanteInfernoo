@@ -400,6 +400,7 @@ export interface Database {
           expected_close_date: string | null;
           stage_entered_at: string;
           closed_at: string | null;
+          source: string | null;
           custom_fields: Json;
           created_at: string;
           updated_at: string;
@@ -420,6 +421,7 @@ export interface Database {
           expected_close_date?: string | null;
           stage_entered_at?: string;
           closed_at?: string | null;
+          source?: string | null;
           custom_fields?: Json;
           created_at?: string;
           updated_at?: string;
@@ -440,6 +442,7 @@ export interface Database {
           expected_close_date?: string | null;
           stage_entered_at?: string;
           closed_at?: string | null;
+          source?: string | null;
           custom_fields?: Json;
           created_at?: string;
           updated_at?: string;
@@ -989,6 +992,86 @@ export interface Database {
             foreignKeyName: "automation_logs_rule_id_fkey";
             columns: ["rule_id"];
             referencedRelation: "automation_rules";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      deal_stage_history: {
+        Row: {
+          id: string;
+          deal_id: string;
+          stage_id: string;
+          entered_at: string;
+          exited_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          deal_id: string;
+          stage_id: string;
+          entered_at?: string;
+          exited_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          deal_id?: string;
+          stage_id?: string;
+          entered_at?: string;
+          exited_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "deal_stage_history_deal_id_fkey";
+            columns: ["deal_id"];
+            referencedRelation: "deals";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "deal_stage_history_stage_id_fkey";
+            columns: ["stage_id"];
+            referencedRelation: "stages";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      goals: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          user_id: string | null;
+          metric_type: string;
+          period: string;
+          target_value: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          user_id?: string | null;
+          metric_type: string;
+          period: string;
+          target_value: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          user_id?: string | null;
+          metric_type?: string;
+          period?: string;
+          target_value?: number;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "goals_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "goals_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
         ];

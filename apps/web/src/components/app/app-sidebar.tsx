@@ -7,6 +7,7 @@ import {
   Mail,
   Settings,
   Tag,
+  Target,
   Users,
   Zap,
 } from "lucide-react";
@@ -76,6 +77,13 @@ export function AppSidebar({ workspace, memberships }: AppSidebarProps) {
         >
           <CalendarClock className="size-4" />
           Activity types
+        </Link>
+        <Link
+          href={`${base}/settings/goals`}
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+        >
+          <Target className="size-4" />
+          Goals
         </Link>
         <Link
           href={`${base}/settings/automation`}

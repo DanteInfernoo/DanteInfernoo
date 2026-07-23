@@ -18,6 +18,7 @@ function readDealFields(formData: FormData) {
     organization_id: formData.get("organization_id") || "",
     person_id: formData.get("person_id") || "",
     expected_close_date: formData.get("expected_close_date") || "",
+    source: formData.get("source") || "",
   });
 }
 
@@ -57,6 +58,7 @@ export async function createDeal(
       person_id: parsed.data.person_id || null,
       owner_id: user?.id,
       expected_close_date: parsed.data.expected_close_date || null,
+      source: parsed.data.source || null,
       custom_fields: customFields,
     })
     .select("id")
@@ -94,6 +96,7 @@ export async function updateDeal(
       organization_id: parsed.data.organization_id || null,
       person_id: parsed.data.person_id || null,
       expected_close_date: parsed.data.expected_close_date || null,
+      source: parsed.data.source || null,
       custom_fields: customFields,
     })
     .eq("id", dealId);

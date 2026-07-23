@@ -60,14 +60,25 @@ export function DealForm({
           <Input id="currency" name="currency" defaultValue={deal?.currency ?? "USD"} />
         </div>
       </div>
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="expected_close_date">Expected close date</Label>
-        <Input
-          id="expected_close_date"
-          name="expected_close_date"
-          type="date"
-          defaultValue={deal?.expected_close_date ?? ""}
-        />
+      <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="expected_close_date">Expected close date</Label>
+          <Input
+            id="expected_close_date"
+            name="expected_close_date"
+            type="date"
+            defaultValue={deal?.expected_close_date ?? ""}
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="source">Source</Label>
+          <Input
+            id="source"
+            name="source"
+            placeholder="e.g. referral, website, cold call"
+            defaultValue={deal?.source ?? ""}
+          />
+        </div>
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="organization_id">Organization</Label>

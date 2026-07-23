@@ -107,6 +107,7 @@ export const dealSchema = z.object({
   organization_id: z.string().uuid().optional().or(z.literal("")),
   person_id: z.string().uuid().optional().or(z.literal("")),
   expected_close_date: z.string().optional().or(z.literal("")),
+  source: z.string().optional().or(z.literal("")),
 });
 
 export type DealInput = z.infer<typeof dealSchema>;
@@ -189,6 +190,15 @@ export const automationRuleFormSchema = z.object({
 });
 
 export type AutomationRuleFormInput = z.infer<typeof automationRuleFormSchema>;
+
+export const goalSchema = z.object({
+  user_id: z.string().uuid().optional().or(z.literal("")),
+  metric_type: z.enum(["revenue", "deals_won", "activities_completed"]),
+  period: z.string().regex(/^\d{4}-\d{2}$/, "Use YYYY-MM"),
+  target_value: z.coerce.number().positive(),
+});
+
+export type GoalInput = z.infer<typeof goalSchema>;
 
 export const labelSchema = z.object({
   entity_type: z.string().min(1),
