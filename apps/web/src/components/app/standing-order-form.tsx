@@ -44,7 +44,7 @@ export function StandingOrderForm({
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="name">Name</Label>
-          <Input id="name" name="name" placeholder="e.g. Weekly pita drop" required />
+          <Input id="name" name="name" placeholder="e.g. Weekly reorder" required />
         </div>
       </div>
 
