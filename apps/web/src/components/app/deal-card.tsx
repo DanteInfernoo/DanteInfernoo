@@ -10,10 +10,12 @@ export function DealCard({
   deal,
   rottenDays,
   workspaceSlug,
+  hasNextActivity,
 }: {
   deal: DealWithRelations;
   rottenDays: number | null;
   workspaceSlug: string;
+  hasNextActivity: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({ id: deal.id });
@@ -63,6 +65,11 @@ export function DealCard({
             {deal.owner?.full_name ?? deal.owner?.email ?? ""}
           </span>
         </div>
+        {!hasNextActivity ? (
+          <span className="w-fit rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+            No next activity
+          </span>
+        ) : null}
       </CardContent>
     </Card>
   );

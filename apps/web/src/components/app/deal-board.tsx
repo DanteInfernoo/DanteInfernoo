@@ -14,10 +14,12 @@ function StageColumn({
   stage,
   deals,
   workspaceSlug,
+  dealIdsWithOpenActivity,
 }: {
   stage: StageRow;
   deals: DealWithRelations[];
   workspaceSlug: string;
+  dealIdsWithOpenActivity: Set<string>;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage.id });
   const total = deals.reduce((sum, d) => sum + d.value, 0);
@@ -42,6 +44,7 @@ function StageColumn({
             deal={deal}
             rottenDays={stage.rotten_days}
             workspaceSlug={workspaceSlug}
+            hasNextActivity={dealIdsWithOpenActivity.has(deal.id)}
           />
         ))}
       </div>
@@ -53,10 +56,12 @@ export function DealBoard({
   workspaceSlug,
   stages,
   initialDeals,
+  dealIdsWithOpenActivity,
 }: {
   workspaceSlug: string;
   stages: StageRow[];
   initialDeals: DealWithRelations[];
+  dealIdsWithOpenActivity: Set<string>;
 }) {
   const [deals, setDeals] = useState(initialDeals);
   const [, startTransition] = useTransition();
@@ -117,6 +122,7 @@ export function DealBoard({
               stage={stage}
               deals={dealsByStage.get(stage.id) ?? []}
               workspaceSlug={workspaceSlug}
+              dealIdsWithOpenActivity={dealIdsWithOpenActivity}
             />
           ))}
         </div>

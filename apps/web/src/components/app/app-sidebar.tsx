@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   Building2,
+  CalendarClock,
   GitBranch,
   LayoutDashboard,
   Settings,
@@ -40,6 +41,13 @@ export function AppSidebar({ workspace, memberships }: AppSidebarProps) {
           Deals
         </Link>
         <Link
+          href={`${base}/activities`}
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+        >
+          <CalendarClock className="size-4" />
+          Activities
+        </Link>
+        <Link
           href={`${base}/organizations`}
           className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
         >
@@ -59,6 +67,13 @@ export function AppSidebar({ workspace, memberships }: AppSidebarProps) {
         >
           <GitBranch className="size-4" />
           Pipelines
+        </Link>
+        <Link
+          href={`${base}/settings/activity-types`}
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+        >
+          <CalendarClock className="size-4" />
+          Activity types
         </Link>
         <Link
           href={`${base}/settings/fields`}

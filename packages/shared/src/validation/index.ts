@@ -111,6 +111,37 @@ export const dealSchema = z.object({
 
 export type DealInput = z.infer<typeof dealSchema>;
 
+export const activityTypeSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  icon: z.string().min(1).default("circle"),
+  color: z.string().min(1).default("#6b7280"),
+});
+
+export type ActivityTypeInput = z.infer<typeof activityTypeSchema>;
+
+export const recurrenceIntervalSchema = z.enum([
+  "none",
+  "daily",
+  "weekly",
+  "monthly",
+]);
+
+export const activitySchema = z.object({
+  type_id: z.string().uuid(),
+  subject: z.string().min(1, "Subject is required"),
+  notes: z.string().optional(),
+  due_date: z.string().min(1, "Due date is required"),
+  due_time: z.string().optional().or(z.literal("")),
+  duration_minutes: z.coerce.number().int().positive().optional(),
+  deal_id: z.string().uuid().optional().or(z.literal("")),
+  person_id: z.string().uuid().optional().or(z.literal("")),
+  organization_id: z.string().uuid().optional().or(z.literal("")),
+  recurrence_interval: recurrenceIntervalSchema.default("none"),
+  recurrence_until: z.string().optional().or(z.literal("")),
+});
+
+export type ActivityInput = z.infer<typeof activitySchema>;
+
 export const labelSchema = z.object({
   entity_type: z.string().min(1),
   name: z.string().min(1),

@@ -24,6 +24,8 @@ export type CustomFieldType =
 
 export type DealStatus = "open" | "won" | "lost";
 
+export type RecurrenceInterval = "none" | "daily" | "weekly" | "monthly";
+
 export interface Database {
   public: {
     Tables: {
@@ -477,6 +479,143 @@ export interface Database {
           },
         ];
       };
+      activity_types: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          name: string;
+          icon: string;
+          color: string;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          name: string;
+          icon?: string;
+          color?: string;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          name?: string;
+          icon?: string;
+          color?: string;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "activity_types_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      activities: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          type_id: string;
+          subject: string;
+          notes: string | null;
+          due_date: string;
+          due_time: string | null;
+          duration_minutes: number | null;
+          is_done: boolean;
+          done_at: string | null;
+          owner_id: string | null;
+          deal_id: string | null;
+          person_id: string | null;
+          organization_id: string | null;
+          recurrence_interval: RecurrenceInterval;
+          recurrence_until: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          type_id: string;
+          subject: string;
+          notes?: string | null;
+          due_date: string;
+          due_time?: string | null;
+          duration_minutes?: number | null;
+          is_done?: boolean;
+          done_at?: string | null;
+          owner_id?: string | null;
+          deal_id?: string | null;
+          person_id?: string | null;
+          organization_id?: string | null;
+          recurrence_interval?: RecurrenceInterval;
+          recurrence_until?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          type_id?: string;
+          subject?: string;
+          notes?: string | null;
+          due_date?: string;
+          due_time?: string | null;
+          duration_minutes?: number | null;
+          is_done?: boolean;
+          done_at?: string | null;
+          owner_id?: string | null;
+          deal_id?: string | null;
+          person_id?: string | null;
+          organization_id?: string | null;
+          recurrence_interval?: RecurrenceInterval;
+          recurrence_until?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "activities_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "activities_type_id_fkey";
+            columns: ["type_id"];
+            referencedRelation: "activity_types";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "activities_deal_id_fkey";
+            columns: ["deal_id"];
+            referencedRelation: "deals";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "activities_person_id_fkey";
+            columns: ["person_id"];
+            referencedRelation: "persons";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "activities_organization_id_fkey";
+            columns: ["organization_id"];
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "activities_owner_id_fkey";
+            columns: ["owner_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       entity_labels: {
         Row: {
           label_id: string;
@@ -521,6 +660,7 @@ export interface Database {
       workspace_role: WorkspaceRole;
       custom_field_type: CustomFieldType;
       deal_status: DealStatus;
+      recurrence_interval: RecurrenceInterval;
     };
   };
 }

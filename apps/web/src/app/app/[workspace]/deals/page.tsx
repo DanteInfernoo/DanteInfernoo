@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { getWorkspaceBySlug } from "@/lib/data/workspaces";
 import { listPipelines, getPipelineWithStages } from "@/lib/data/pipelines";
 import { listOpenDealsByPipeline, listAllDealsByPipeline } from "@/lib/data/deals";
+import { listDealIdsWithOpenActivity } from "@/lib/data/activities";
 import { DealBoard } from "@/components/app/deal-board";
 import { DealList } from "@/components/app/deal-list";
 import { PipelineSelector } from "@/components/app/pipeline-selector";
@@ -98,6 +99,7 @@ export default async function DealsPage({
           workspaceSlug={slug}
           stages={pipeline.stages}
           initialDeals={deals}
+          dealIdsWithOpenActivity={await listDealIdsWithOpenActivity(workspace.id)}
         />
       )}
     </div>
