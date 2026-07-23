@@ -1,22 +1,28 @@
 import { Fragment } from "react";
 import Link from "next/link";
-import { Paperclip } from "lucide-react";
+import { Paperclip, Mail } from "lucide-react";
+import type { TemplateContext } from "@crm/shared";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NoteComposer } from "@/components/app/note-composer";
 import { FileUploader } from "@/components/app/file-uploader";
+import { EmailComposer } from "@/components/app/email-composer";
 import {
   DeleteNoteButton,
   DeleteFileButton,
 } from "@/components/app/timeline-delete-buttons";
+import { DeleteEmailButton } from "@/components/app/delete-email-button";
 import { listNotesForEntity } from "@/lib/data/notes";
 import { listFilesForEntity, getFileDownloadUrl } from "@/lib/data/files";
 import { listActivitiesForEntity } from "@/lib/data/activities";
+import { listEmailsForEntity } from "@/lib/data/emails";
 import { listWorkspaceMembers } from "@/lib/data/members";
+import { listEmailTemplates } from "@/lib/data/email-templates";
 
 type TimelineItem =
   | { kind: "note"; at: string; data: Awaited<ReturnType<typeof listNotesForEntity>>[number] }
   | { kind: "file"; at: string; data: Awaited<ReturnType<typeof listFilesForEntity>>[number] & { url: string } }
-  | { kind: "activity"; at: string; data: Awaited<ReturnType<typeof listActivitiesForEntity>>[number] };
+  | { kind: "activity"; at: string; data: Awaited<ReturnType<typeof listActivitiesForEntity>>[number] }
+  | { kind: "email"; at: string; data: Awaited<ReturnType<typeof listEmailsForEntity>>[number] };
 
 function renderBody(body: string, memberNames: string[]) {
   if (memberNames.length === 0) return body;
@@ -48,17 +54,21 @@ export async function EntityTimeline({
   workspaceId,
   entityType,
   entityId,
+  mergeContext,
 }: {
   workspaceSlug: string;
   workspaceId: string;
   entityType: "deal" | "person" | "organization";
   entityId: string;
+  mergeContext: TemplateContext;
 }) {
-  const [notes, files, activities, members] = await Promise.all([
+  const [notes, files, activities, emails, members, templates] = await Promise.all([
     listNotesForEntity(entityType, entityId),
     listFilesForEntity(entityType, entityId),
     listActivitiesForEntity(entityType, entityId),
+    listEmailsForEntity(entityType, entityId),
     listWorkspaceMembers(workspaceId),
+    listEmailTemplates(workspaceId),
   ]);
 
   const memberNames = members
@@ -73,6 +83,7 @@ export async function EntityTimeline({
     ...notes.map((n): TimelineItem => ({ kind: "note", at: n.created_at, data: n })),
     ...filesWithUrls.map((f): TimelineItem => ({ kind: "file", at: f.created_at, data: f })),
     ...activities.map((a): TimelineItem => ({ kind: "activity", at: a.created_at, data: a })),
+    ...emails.map((e): TimelineItem => ({ kind: "email", at: e.sent_at, data: e })),
   ].sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
 
   return (
@@ -91,6 +102,13 @@ export async function EntityTimeline({
           workspaceSlug={workspaceSlug}
           entityType={entityType}
           entityId={entityId}
+        />
+        <EmailComposer
+          workspaceSlug={workspaceSlug}
+          entityType={entityType}
+          entityId={entityId}
+          templates={templates}
+          mergeContext={mergeContext}
         />
 
         <div className="flex flex-col gap-3">
@@ -135,6 +153,31 @@ export async function EntityTimeline({
                     entityId={entityId}
                     fileId={item.data.id}
                     storagePath={item.data.storage_path}
+                  />
+                </div>
+              ) : null}
+
+              {item.kind === "email" ? (
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="flex items-center gap-2 font-medium">
+                      <Mail className="size-3.5" />
+                      {item.data.direction === "outbound" ? "Sent" : "Received"}:{" "}
+                      {item.data.subject ?? "(no subject)"}
+                    </p>
+                    <p className="text-muted-foreground mt-1 whitespace-pre-wrap">
+                      {item.data.body}
+                    </p>
+                    <p className="text-muted-foreground mt-1 text-xs">
+                      {item.data.logger?.full_name ?? item.data.logger?.email ?? "Someone"} ·{" "}
+                      {new Date(item.data.sent_at).toLocaleString()}
+                    </p>
+                  </div>
+                  <DeleteEmailButton
+                    workspaceSlug={workspaceSlug}
+                    entityType={entityType}
+                    entityId={entityId}
+                    emailId={item.data.id}
                   />
                 </div>
               ) : null}

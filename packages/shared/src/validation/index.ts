@@ -148,6 +148,28 @@ export const noteSchema = z.object({
 
 export type NoteInput = z.infer<typeof noteSchema>;
 
+export const emailTemplateSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  subject: z.string().min(1, "Subject is required"),
+  body: z.string().min(1, "Body is required"),
+});
+
+export type EmailTemplateInput = z.infer<typeof emailTemplateSchema>;
+
+export const emailLogSchema = z.object({
+  direction: z.enum(["outbound", "inbound"]).default("outbound"),
+  subject: z.string().optional(),
+  body: z.string().min(1, "Body is required"),
+  from_address: z.string().optional(),
+  to_addresses: z.string().optional(),
+  sent_at: z.string().optional(),
+  deal_id: z.string().uuid().optional().or(z.literal("")),
+  person_id: z.string().uuid().optional().or(z.literal("")),
+  organization_id: z.string().uuid().optional().or(z.literal("")),
+});
+
+export type EmailLogInput = z.infer<typeof emailLogSchema>;
+
 export const labelSchema = z.object({
   entity_type: z.string().min(1),
   name: z.string().min(1),

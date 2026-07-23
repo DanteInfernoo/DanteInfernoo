@@ -75,6 +75,12 @@ export default async function PersonDetailPage({
         workspaceId={workspace.id}
         entityType="person"
         entityId={id}
+        mergeContext={{
+          person: { name: person.name, email: person.email },
+          organization: person.organization
+            ? { name: person.organization.name }
+            : undefined,
+        }}
       />
     </div>
   );

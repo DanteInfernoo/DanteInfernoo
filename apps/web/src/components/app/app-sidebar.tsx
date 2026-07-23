@@ -4,6 +4,7 @@ import {
   CalendarClock,
   GitBranch,
   LayoutDashboard,
+  Mail,
   Settings,
   Tag,
   Users,
@@ -74,6 +75,13 @@ export function AppSidebar({ workspace, memberships }: AppSidebarProps) {
         >
           <CalendarClock className="size-4" />
           Activity types
+        </Link>
+        <Link
+          href={`${base}/settings/email-templates`}
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+        >
+          <Mail className="size-4" />
+          Email templates
         </Link>
         <Link
           href={`${base}/settings/fields`}

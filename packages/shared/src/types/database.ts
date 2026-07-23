@@ -26,6 +26,10 @@ export type DealStatus = "open" | "won" | "lost";
 
 export type RecurrenceInterval = "none" | "daily" | "weekly" | "monthly";
 
+export type EmailSyncStatus = "not_connected" | "connected" | "error";
+
+export type EmailDirection = "outbound" | "inbound";
+
 export interface Database {
   public: {
     Tables: {
@@ -717,6 +721,195 @@ export interface Database {
           },
         ];
       };
+      email_templates: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          name: string;
+          subject: string;
+          body: string;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          name: string;
+          subject: string;
+          body: string;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          name?: string;
+          subject?: string;
+          body?: string;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "email_templates_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      email_accounts: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          user_id: string;
+          provider: string;
+          email_address: string;
+          access_token: string | null;
+          refresh_token: string | null;
+          token_expires_at: string | null;
+          sync_status: EmailSyncStatus;
+          last_synced_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          user_id: string;
+          provider: string;
+          email_address: string;
+          access_token?: string | null;
+          refresh_token?: string | null;
+          token_expires_at?: string | null;
+          sync_status?: EmailSyncStatus;
+          last_synced_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          user_id?: string;
+          provider?: string;
+          email_address?: string;
+          access_token?: string | null;
+          refresh_token?: string | null;
+          token_expires_at?: string | null;
+          sync_status?: EmailSyncStatus;
+          last_synced_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "email_accounts_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "email_accounts_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      emails: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          direction: EmailDirection;
+          subject: string | null;
+          body: string;
+          from_address: string | null;
+          to_addresses: string[];
+          sent_at: string;
+          deal_id: string | null;
+          person_id: string | null;
+          organization_id: string | null;
+          logged_by: string | null;
+          email_account_id: string | null;
+          external_message_id: string | null;
+          thread_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          direction?: EmailDirection;
+          subject?: string | null;
+          body: string;
+          from_address?: string | null;
+          to_addresses?: string[];
+          sent_at?: string;
+          deal_id?: string | null;
+          person_id?: string | null;
+          organization_id?: string | null;
+          logged_by?: string | null;
+          email_account_id?: string | null;
+          external_message_id?: string | null;
+          thread_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          direction?: EmailDirection;
+          subject?: string | null;
+          body?: string;
+          from_address?: string | null;
+          to_addresses?: string[];
+          sent_at?: string;
+          deal_id?: string | null;
+          person_id?: string | null;
+          organization_id?: string | null;
+          logged_by?: string | null;
+          email_account_id?: string | null;
+          external_message_id?: string | null;
+          thread_id?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "emails_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "emails_deal_id_fkey";
+            columns: ["deal_id"];
+            referencedRelation: "deals";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "emails_person_id_fkey";
+            columns: ["person_id"];
+            referencedRelation: "persons";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "emails_organization_id_fkey";
+            columns: ["organization_id"];
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "emails_logged_by_fkey";
+            columns: ["logged_by"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "emails_email_account_id_fkey";
+            columns: ["email_account_id"];
+            referencedRelation: "email_accounts";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       entity_labels: {
         Row: {
           label_id: string;
@@ -762,6 +955,8 @@ export interface Database {
       custom_field_type: CustomFieldType;
       deal_status: DealStatus;
       recurrence_interval: RecurrenceInterval;
+      email_sync_status: EmailSyncStatus;
+      email_direction: EmailDirection;
     };
   };
 }

@@ -81,6 +81,11 @@ export default async function DealDetailPage({
         workspaceId={workspace.id}
         entityType="deal"
         entityId={id}
+        mergeContext={{
+          deal: { title: deal.title, value: deal.value },
+          organization: deal.organization ? { name: deal.organization.name } : undefined,
+          person: deal.person ? { name: deal.person.name } : undefined,
+        }}
       />
     </div>
   );

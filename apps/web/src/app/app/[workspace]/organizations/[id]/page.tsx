@@ -96,6 +96,7 @@ export default async function OrganizationDetailPage({
         workspaceId={workspace.id}
         entityType="organization"
         entityId={id}
+        mergeContext={{ organization: { name: organization.name } }}
       />
     </div>
   );
