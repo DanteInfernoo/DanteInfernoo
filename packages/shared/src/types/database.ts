@@ -616,6 +616,107 @@ export interface Database {
           },
         ];
       };
+      notes: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          entity_type: string;
+          entity_id: string;
+          body: string;
+          mentioned_user_ids: string[];
+          author_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          entity_type: string;
+          entity_id: string;
+          body: string;
+          mentioned_user_ids?: string[];
+          author_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          entity_type?: string;
+          entity_id?: string;
+          body?: string;
+          mentioned_user_ids?: string[];
+          author_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "notes_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "notes_author_id_fkey";
+            columns: ["author_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      files: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          entity_type: string;
+          entity_id: string;
+          filename: string;
+          storage_path: string;
+          content_type: string | null;
+          size_bytes: number | null;
+          uploaded_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          entity_type: string;
+          entity_id: string;
+          filename: string;
+          storage_path: string;
+          content_type?: string | null;
+          size_bytes?: number | null;
+          uploaded_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          entity_type?: string;
+          entity_id?: string;
+          filename?: string;
+          storage_path?: string;
+          content_type?: string | null;
+          size_bytes?: number | null;
+          uploaded_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "files_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "files_uploaded_by_fkey";
+            columns: ["uploaded_by"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       entity_labels: {
         Row: {
           label_id: string;

@@ -142,6 +142,12 @@ export const activitySchema = z.object({
 
 export type ActivityInput = z.infer<typeof activitySchema>;
 
+export const noteSchema = z.object({
+  body: z.string().min(1, "Note can't be empty"),
+});
+
+export type NoteInput = z.infer<typeof noteSchema>;
+
 export const labelSchema = z.object({
   entity_type: z.string().min(1),
   name: z.string().min(1),

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PersonForm } from "@/components/app/person-form";
 import { DeleteButton } from "@/components/app/delete-button";
 import { LabelAttacher } from "@/components/app/label-attacher";
+import { EntityTimeline } from "@/components/app/entity-timeline";
 import { getWorkspaceBySlug } from "@/lib/data/workspaces";
 import { getPerson } from "@/lib/data/persons";
 import { listOrganizations } from "@/lib/data/organizations";
@@ -68,6 +69,13 @@ export default async function PersonDetailPage({
           />
         </CardContent>
       </Card>
+
+      <EntityTimeline
+        workspaceSlug={slug}
+        workspaceId={workspace.id}
+        entityType="person"
+        entityId={id}
+      />
     </div>
   );
 }

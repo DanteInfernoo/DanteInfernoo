@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DealForm } from "@/components/app/deal-form";
 import { DealStatusActions } from "@/components/app/deal-status-actions";
 import { DeleteButton } from "@/components/app/delete-button";
+import { EntityTimeline } from "@/components/app/entity-timeline";
 import { getWorkspaceBySlug } from "@/lib/data/workspaces";
 import { getDeal } from "@/lib/data/deals";
 import { getPipelineWithStages } from "@/lib/data/pipelines";
@@ -74,6 +75,13 @@ export default async function DealDetailPage({
           />
         </CardContent>
       </Card>
+
+      <EntityTimeline
+        workspaceSlug={slug}
+        workspaceId={workspace.id}
+        entityType="deal"
+        entityId={id}
+      />
     </div>
   );
 }

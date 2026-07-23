@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { OrganizationForm } from "@/components/app/organization-form";
 import { DeleteButton } from "@/components/app/delete-button";
 import { LabelAttacher } from "@/components/app/label-attacher";
+import { EntityTimeline } from "@/components/app/entity-timeline";
 import { getWorkspaceBySlug } from "@/lib/data/workspaces";
 import {
   getOrganization,
@@ -89,6 +90,13 @@ export default async function OrganizationDetailPage({
           ) : null}
         </CardContent>
       </Card>
+
+      <EntityTimeline
+        workspaceSlug={slug}
+        workspaceId={workspace.id}
+        entityType="organization"
+        entityId={id}
+      />
     </div>
   );
 }

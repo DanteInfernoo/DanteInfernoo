@@ -3,3 +3,4 @@ export * from "./types/database";
 export * from "./validation";
 export * from "./deals";
 export * from "./activities";
+export * from "./mentions";
