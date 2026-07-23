@@ -110,11 +110,26 @@ export async function deleteDeal(workspaceSlug: string, dealId: string) {
   redirect(`/app/${workspaceSlug}/deals`);
 }
 
+async function runAutomations(
+  workspaceId: string,
+  dealId: string,
+  eventType: "deal_stage_changed" | "deal_won" | "deal_lost",
+) {
+  const supabase = await createClient();
+  await supabase.rpc("run_automations", {
+    p_workspace_id: workspaceId,
+    p_entity_type: "deal",
+    p_entity_id: dealId,
+    p_event_type: eventType,
+  });
+}
+
 export async function updateDealStage(
   workspaceSlug: string,
   dealId: string,
   stageId: string,
 ) {
+  const workspace = await getWorkspaceBySlug(workspaceSlug);
   const supabase = await createClient();
   const { error } = await supabase
     .from("deals")
@@ -123,12 +138,16 @@ export async function updateDealStage(
 
   if (error) throw new Error(error.message);
 
+  if (workspace) await runAutomations(workspace.id, dealId, "deal_stage_changed");
+
   revalidatePath(`/app/${workspaceSlug}/deals`);
 }
 
 export async function markDealWon(workspaceSlug: string, dealId: string) {
+  const workspace = await getWorkspaceBySlug(workspaceSlug);
   const supabase = await createClient();
   await supabase.from("deals").update({ status: "won" }).eq("id", dealId);
+  if (workspace) await runAutomations(workspace.id, dealId, "deal_won");
   revalidatePath(`/app/${workspaceSlug}/deals`);
   revalidatePath(`/app/${workspaceSlug}/deals/${dealId}`);
 }
@@ -139,11 +158,13 @@ export async function markDealLost(
   formData: FormData,
 ) {
   const reason = (formData.get("lost_reason") as string) || null;
+  const workspace = await getWorkspaceBySlug(workspaceSlug);
   const supabase = await createClient();
   await supabase
     .from("deals")
     .update({ status: "lost", lost_reason: reason })
     .eq("id", dealId);
+  if (workspace) await runAutomations(workspace.id, dealId, "deal_lost");
   revalidatePath(`/app/${workspaceSlug}/deals`);
   revalidatePath(`/app/${workspaceSlug}/deals/${dealId}`);
 }

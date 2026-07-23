@@ -910,6 +910,89 @@ export interface Database {
           },
         ];
       };
+      automation_rules: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          name: string;
+          entity_type: string;
+          trigger_type: string;
+          trigger_config: Json;
+          conditions: Json;
+          actions: Json;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          name: string;
+          entity_type?: string;
+          trigger_type: string;
+          trigger_config?: Json;
+          conditions?: Json;
+          actions?: Json;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          name?: string;
+          entity_type?: string;
+          trigger_type?: string;
+          trigger_config?: Json;
+          conditions?: Json;
+          actions?: Json;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "automation_rules_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      automation_logs: {
+        Row: {
+          id: string;
+          rule_id: string;
+          entity_id: string;
+          result: string;
+          detail: string | null;
+          ran_at: string;
+        };
+        Insert: {
+          id?: string;
+          rule_id: string;
+          entity_id: string;
+          result: string;
+          detail?: string | null;
+          ran_at?: string;
+        };
+        Update: {
+          id?: string;
+          rule_id?: string;
+          entity_id?: string;
+          result?: string;
+          detail?: string | null;
+          ran_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "automation_logs_rule_id_fkey";
+            columns: ["rule_id"];
+            referencedRelation: "automation_rules";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       entity_labels: {
         Row: {
           label_id: string;
@@ -947,6 +1030,15 @@ export interface Database {
       };
       merge_persons: {
         Args: { primary_id: string; duplicate_id: string };
+        Returns: undefined;
+      };
+      run_automations: {
+        Args: {
+          p_workspace_id: string;
+          p_entity_type: string;
+          p_entity_id: string;
+          p_event_type: string;
+        };
         Returns: undefined;
       };
     };

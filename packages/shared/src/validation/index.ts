@@ -170,6 +170,26 @@ export const emailLogSchema = z.object({
 
 export type EmailLogInput = z.infer<typeof emailLogSchema>;
 
+export const automationTriggerTypeSchema = z.enum([
+  "deal_stage_changed",
+  "deal_won",
+  "deal_lost",
+]);
+
+export const automationRuleFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  trigger_type: automationTriggerTypeSchema,
+  to_stage_id: z.string().uuid().optional().or(z.literal("")),
+  condition_operator: z.enum(["gt", "gte", "lt", "lte", "eq"]).optional().or(z.literal("")),
+  condition_value: z.coerce.number().optional(),
+  activity_type_id: z.string().uuid().optional().or(z.literal("")),
+  activity_subject: z.string().optional(),
+  activity_due_in_days: z.coerce.number().int().positive().optional(),
+  email_template_id: z.string().uuid().optional().or(z.literal("")),
+});
+
+export type AutomationRuleFormInput = z.infer<typeof automationRuleFormSchema>;
+
 export const labelSchema = z.object({
   entity_type: z.string().min(1),
   name: z.string().min(1),

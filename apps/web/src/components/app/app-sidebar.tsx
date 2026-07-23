@@ -8,6 +8,7 @@ import {
   Settings,
   Tag,
   Users,
+  Zap,
 } from "lucide-react";
 import { WorkspaceSwitcher } from "@/components/app/workspace-switcher";
 import { Button } from "@/components/ui/button";
@@ -75,6 +76,13 @@ export function AppSidebar({ workspace, memberships }: AppSidebarProps) {
         >
           <CalendarClock className="size-4" />
           Activity types
+        </Link>
+        <Link
+          href={`${base}/settings/automation`}
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+        >
+          <Zap className="size-4" />
+          Automation
         </Link>
         <Link
           href={`${base}/settings/email-templates`}
