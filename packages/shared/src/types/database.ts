@@ -203,6 +203,107 @@ export interface Database {
           },
         ];
       };
+      organizations: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          name: string;
+          owner_id: string | null;
+          custom_fields: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          name: string;
+          owner_id?: string | null;
+          custom_fields?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          name?: string;
+          owner_id?: string | null;
+          custom_fields?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "organizations_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "organizations_owner_id_fkey";
+            columns: ["owner_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      persons: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          organization_id: string | null;
+          name: string;
+          email: string | null;
+          phone: string | null;
+          owner_id: string | null;
+          custom_fields: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          organization_id?: string | null;
+          name: string;
+          email?: string | null;
+          phone?: string | null;
+          owner_id?: string | null;
+          custom_fields?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          organization_id?: string | null;
+          name?: string;
+          email?: string | null;
+          phone?: string | null;
+          owner_id?: string | null;
+          custom_fields?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "persons_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "persons_organization_id_fkey";
+            columns: ["organization_id"];
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "persons_owner_id_fkey";
+            columns: ["owner_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       entity_labels: {
         Row: {
           label_id: string;
@@ -233,7 +334,16 @@ export interface Database {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      merge_organizations: {
+        Args: { primary_id: string; duplicate_id: string };
+        Returns: undefined;
+      };
+      merge_persons: {
+        Args: { primary_id: string; duplicate_id: string };
+        Returns: undefined;
+      };
+    };
     Enums: {
       workspace_role: WorkspaceRole;
       custom_field_type: CustomFieldType;

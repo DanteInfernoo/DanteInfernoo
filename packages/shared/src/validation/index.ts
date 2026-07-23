@@ -70,3 +70,26 @@ export const signInSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1, "Password is required"),
 });
+
+export const organizationSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+});
+
+export type OrganizationInput = z.infer<typeof organizationSchema>;
+
+export const personSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email().optional().or(z.literal("")),
+  phone: z.string().optional(),
+  organization_id: z.string().uuid().optional().or(z.literal("")),
+});
+
+export type PersonInput = z.infer<typeof personSchema>;
+
+export const labelSchema = z.object({
+  entity_type: z.string().min(1),
+  name: z.string().min(1),
+  color: z.string().min(1).default("#6b7280"),
+});
+
+export type LabelInput = z.infer<typeof labelSchema>;
