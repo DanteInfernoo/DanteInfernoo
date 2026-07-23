@@ -22,6 +22,8 @@ export type CustomFieldType =
   | "currency"
   | "checkbox";
 
+export type DealStatus = "open" | "won" | "lost";
+
 export interface Database {
   public: {
     Tables: {
@@ -304,6 +306,177 @@ export interface Database {
           },
         ];
       };
+      pipelines: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          name: string;
+          is_default: boolean;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          name: string;
+          is_default?: boolean;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          name?: string;
+          is_default?: boolean;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "pipelines_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      stages: {
+        Row: {
+          id: string;
+          pipeline_id: string;
+          name: string;
+          probability: number;
+          rotten_days: number | null;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          pipeline_id: string;
+          name: string;
+          probability?: number;
+          rotten_days?: number | null;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          pipeline_id?: string;
+          name?: string;
+          probability?: number;
+          rotten_days?: number | null;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "stages_pipeline_id_fkey";
+            columns: ["pipeline_id"];
+            referencedRelation: "pipelines";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      deals: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          pipeline_id: string;
+          stage_id: string;
+          title: string;
+          value: number;
+          currency: string;
+          organization_id: string | null;
+          person_id: string | null;
+          owner_id: string | null;
+          status: DealStatus;
+          lost_reason: string | null;
+          expected_close_date: string | null;
+          stage_entered_at: string;
+          closed_at: string | null;
+          custom_fields: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          pipeline_id: string;
+          stage_id: string;
+          title: string;
+          value?: number;
+          currency?: string;
+          organization_id?: string | null;
+          person_id?: string | null;
+          owner_id?: string | null;
+          status?: DealStatus;
+          lost_reason?: string | null;
+          expected_close_date?: string | null;
+          stage_entered_at?: string;
+          closed_at?: string | null;
+          custom_fields?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          pipeline_id?: string;
+          stage_id?: string;
+          title?: string;
+          value?: number;
+          currency?: string;
+          organization_id?: string | null;
+          person_id?: string | null;
+          owner_id?: string | null;
+          status?: DealStatus;
+          lost_reason?: string | null;
+          expected_close_date?: string | null;
+          stage_entered_at?: string;
+          closed_at?: string | null;
+          custom_fields?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "deals_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "deals_pipeline_id_fkey";
+            columns: ["pipeline_id"];
+            referencedRelation: "pipelines";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "deals_stage_id_fkey";
+            columns: ["stage_id"];
+            referencedRelation: "stages";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "deals_organization_id_fkey";
+            columns: ["organization_id"];
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "deals_person_id_fkey";
+            columns: ["person_id"];
+            referencedRelation: "persons";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "deals_owner_id_fkey";
+            columns: ["owner_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       entity_labels: {
         Row: {
           label_id: string;
@@ -347,6 +520,7 @@ export interface Database {
     Enums: {
       workspace_role: WorkspaceRole;
       custom_field_type: CustomFieldType;
+      deal_status: DealStatus;
     };
   };
 }

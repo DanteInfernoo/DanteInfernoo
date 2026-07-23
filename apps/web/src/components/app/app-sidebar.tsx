@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { Building2, LayoutDashboard, Settings, Tag, Users } from "lucide-react";
+import {
+  Building2,
+  GitBranch,
+  LayoutDashboard,
+  Settings,
+  Tag,
+  Users,
+} from "lucide-react";
 import { WorkspaceSwitcher } from "@/components/app/workspace-switcher";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/app/(auth)/actions";
@@ -26,6 +33,13 @@ export function AppSidebar({ workspace, memberships }: AppSidebarProps) {
           Dashboard
         </Link>
         <Link
+          href={`${base}/deals`}
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+        >
+          <GitBranch className="size-4" />
+          Deals
+        </Link>
+        <Link
           href={`${base}/organizations`}
           className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
         >
@@ -38,6 +52,13 @@ export function AppSidebar({ workspace, memberships }: AppSidebarProps) {
         >
           <Users className="size-4" />
           People
+        </Link>
+        <Link
+          href={`${base}/settings/pipelines`}
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+        >
+          <GitBranch className="size-4" />
+          Pipelines
         </Link>
         <Link
           href={`${base}/settings/fields`}

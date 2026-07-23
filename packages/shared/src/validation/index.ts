@@ -86,6 +86,31 @@ export const personSchema = z.object({
 
 export type PersonInput = z.infer<typeof personSchema>;
 
+export const pipelineSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+});
+
+export type PipelineInput = z.infer<typeof pipelineSchema>;
+
+export const stageSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  probability: z.coerce.number().int().min(0).max(100),
+  rotten_days: z.coerce.number().int().positive().optional(),
+});
+
+export type StageInput = z.infer<typeof stageSchema>;
+
+export const dealSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  value: z.coerce.number().min(0).default(0),
+  currency: z.string().min(1).default("USD"),
+  organization_id: z.string().uuid().optional().or(z.literal("")),
+  person_id: z.string().uuid().optional().or(z.literal("")),
+  expected_close_date: z.string().optional().or(z.literal("")),
+});
+
+export type DealInput = z.infer<typeof dealSchema>;
+
 export const labelSchema = z.object({
   entity_type: z.string().min(1),
   name: z.string().min(1),
