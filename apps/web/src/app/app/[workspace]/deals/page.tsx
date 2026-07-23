@@ -8,6 +8,10 @@ import { listDealIdsWithOpenActivity } from "@/lib/data/activities";
 import { DealBoard } from "@/components/app/deal-board";
 import { DealList } from "@/components/app/deal-list";
 import { PipelineSelector } from "@/components/app/pipeline-selector";
+import { SaveFilterButton } from "@/components/app/save-filter-button";
+import { SavedFiltersList } from "@/components/app/saved-filters-list";
+import { listSavedFilters } from "@/lib/data/saved-filters";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function DealsPage({
   params,
@@ -58,6 +62,12 @@ export default async function DealsPage({
     ? await listAllDealsByPipeline(workspace.id, activePipelineId)
     : await listOpenDealsByPipeline(workspace.id, activePipelineId);
 
+  const listPath = `/app/${slug}/deals`;
+  const [savedFilters, { data: { user } }] = await Promise.all([
+    listSavedFilters(workspace.id, "deal"),
+    (await createClient()).auth.getUser(),
+  ]);
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -77,6 +87,16 @@ export default async function DealsPage({
             </Link>
           </Button>
         </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <SavedFiltersList
+          filters={savedFilters}
+          basePath={listPath}
+          listPath={listPath}
+          currentUserId={user?.id}
+        />
+        <SaveFilterButton workspaceSlug={slug} entityType="deal" listPath={listPath} />
       </div>
 
       {isListView ? (

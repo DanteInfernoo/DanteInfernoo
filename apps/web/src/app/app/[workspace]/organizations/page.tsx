@@ -2,8 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SaveFilterButton } from "@/components/app/save-filter-button";
+import { SavedFiltersList } from "@/components/app/saved-filters-list";
 import { getWorkspaceBySlug } from "@/lib/data/workspaces";
 import { listOrganizations } from "@/lib/data/organizations";
+import { listSavedFilters } from "@/lib/data/saved-filters";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function OrganizationsPage({
   params,
@@ -17,7 +21,13 @@ export default async function OrganizationsPage({
   const workspace = await getWorkspaceBySlug(slug);
   if (!workspace) notFound();
 
-  const organizations = await listOrganizations(workspace.id, q);
+  const [organizations, savedFilters, { data: { user } }] = await Promise.all([
+    listOrganizations(workspace.id, q),
+    listSavedFilters(workspace.id, "organization"),
+    (await createClient()).auth.getUser(),
+  ]);
+
+  const listPath = `/app/${slug}/organizations`;
 
   return (
     <div className="flex max-w-3xl flex-col gap-4">
@@ -38,11 +48,23 @@ export default async function OrganizationsPage({
         </div>
       </div>
 
-      <form className="flex gap-2">
+      <SavedFiltersList
+        filters={savedFilters}
+        basePath={listPath}
+        listPath={listPath}
+        currentUserId={user?.id}
+      />
+
+      <form className="flex items-center gap-2">
         <Input name="q" placeholder="Search by name..." defaultValue={q} />
         <Button type="submit" variant="outline">
           Search
         </Button>
+        <SaveFilterButton
+          workspaceSlug={slug}
+          entityType="organization"
+          listPath={listPath}
+        />
       </form>
 
       <div className="flex flex-col divide-y rounded-lg border">

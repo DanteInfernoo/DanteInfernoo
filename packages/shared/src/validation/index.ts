@@ -200,6 +200,14 @@ export const goalSchema = z.object({
 
 export type GoalInput = z.infer<typeof goalSchema>;
 
+export const savedFilterSchema = z.object({
+  entity_type: z.string().min(1),
+  name: z.string().min(1, "Name is required"),
+  is_shared: z.boolean().default(false),
+});
+
+export type SavedFilterInput = z.infer<typeof savedFilterSchema>;
+
 export const labelSchema = z.object({
   entity_type: z.string().min(1),
   name: z.string().min(1),

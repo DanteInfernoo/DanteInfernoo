@@ -1076,6 +1076,52 @@ export interface Database {
           },
         ];
       };
+      saved_filters: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          owner_id: string;
+          entity_type: string;
+          name: string;
+          filter_params: Json;
+          is_shared: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          owner_id: string;
+          entity_type: string;
+          name: string;
+          filter_params?: Json;
+          is_shared?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          owner_id?: string;
+          entity_type?: string;
+          name?: string;
+          filter_params?: Json;
+          is_shared?: boolean;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "saved_filters_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "saved_filters_owner_id_fkey";
+            columns: ["owner_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       entity_labels: {
         Row: {
           label_id: string;

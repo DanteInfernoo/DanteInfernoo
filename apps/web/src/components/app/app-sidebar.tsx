@@ -12,6 +12,7 @@ import {
   Zap,
 } from "lucide-react";
 import { WorkspaceSwitcher } from "@/components/app/workspace-switcher";
+import { GlobalSearchInput } from "@/components/app/global-search-input";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/app/(auth)/actions";
 import type { MembershipSummary } from "@/lib/data/workspaces";
@@ -27,6 +28,7 @@ export function AppSidebar({ workspace, memberships }: AppSidebarProps) {
   return (
     <aside className="bg-card text-card-foreground flex h-svh w-64 shrink-0 flex-col gap-4 border-r p-4">
       <WorkspaceSwitcher current={workspace} memberships={memberships} />
+      <GlobalSearchInput workspaceSlug={workspace.slug} />
 
       <nav className="flex flex-col gap-1">
         <Link
