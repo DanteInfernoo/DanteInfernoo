@@ -34,7 +34,7 @@ export default async function GoalsSettingsPage({
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">This month's goals</CardTitle>
+          <CardTitle className="text-base">This month&apos;s goals</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-1">
           {goals.map((g) => (

@@ -42,7 +42,7 @@ export default async function ModulesSettingsPage({
         <h1 className="text-2xl font-semibold">Modules</h1>
         <p className="text-muted-foreground text-sm">
           Turn on the parts of this CRM that fit how your business sells.
-          These are optional — a pure sales-pipeline workspace doesn't need
+          These are optional — a pure sales-pipeline workspace doesn&apos;t need
           any of them.
         </p>
       </div>
