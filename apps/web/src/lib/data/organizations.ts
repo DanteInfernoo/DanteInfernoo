@@ -35,6 +35,18 @@ export async function getOrganization(workspaceId: string, id: string) {
   return data;
 }
 
+export async function listChildOrganizations(parentOrganizationId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("organizations")
+    .select("id, name")
+    .eq("parent_organization_id", parentOrganizationId)
+    .order("name", { ascending: true });
+
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
 export async function listPersonsForOrganization(
   workspaceId: string,
   organizationId: string,
