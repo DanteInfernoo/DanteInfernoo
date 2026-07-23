@@ -1,11 +1,16 @@
 import Link from "next/link";
 import {
+  Boxes,
   Building2,
   CalendarClock,
+  FlaskConical,
   GitBranch,
   LayoutDashboard,
   Mail,
+  Map,
+  Package,
   Settings,
+  ShoppingCart,
   Tag,
   Target,
   Users,
@@ -18,12 +23,15 @@ import { signOut } from "@/app/(auth)/actions";
 import type { MembershipSummary } from "@/lib/data/workspaces";
 
 interface AppSidebarProps {
-  workspace: { name: string; slug: string };
+  workspace: { name: string; slug: string; enabled_modules?: unknown };
   memberships: MembershipSummary[];
 }
 
 export function AppSidebar({ workspace, memberships }: AppSidebarProps) {
   const base = `/app/${workspace.slug}`;
+  const enabledModules = new Set(
+    (workspace.enabled_modules as string[] | null) ?? [],
+  );
 
   return (
     <aside className="bg-card text-card-foreground flex h-svh w-64 shrink-0 flex-col gap-4 border-r p-4">
@@ -66,6 +74,33 @@ export function AppSidebar({ workspace, memberships }: AppSidebarProps) {
           <Users className="size-4" />
           People
         </Link>
+        {enabledModules.has("orders") ? (
+          <Link
+            href={`${base}/orders`}
+            className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+          >
+            <ShoppingCart className="size-4" />
+            Orders
+          </Link>
+        ) : null}
+        {enabledModules.has("samples") ? (
+          <Link
+            href={`${base}/samples`}
+            className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+          >
+            <FlaskConical className="size-4" />
+            Samples
+          </Link>
+        ) : null}
+        {enabledModules.has("territories") ? (
+          <Link
+            href={`${base}/territories`}
+            className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+          >
+            <Map className="size-4" />
+            Territories
+          </Link>
+        ) : null}
         <Link
           href={`${base}/settings/pipelines`}
           className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
@@ -114,6 +149,31 @@ export function AppSidebar({ workspace, memberships }: AppSidebarProps) {
         >
           <Tag className="size-4" />
           Labels
+        </Link>
+        {enabledModules.has("products") ? (
+          <Link
+            href={`${base}/settings/products`}
+            className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+          >
+            <Package className="size-4" />
+            Products
+          </Link>
+        ) : null}
+        {enabledModules.has("territories") ? (
+          <Link
+            href={`${base}/settings/territories`}
+            className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+          >
+            <Map className="size-4" />
+            Manage territories
+          </Link>
+        ) : null}
+        <Link
+          href={`${base}/settings/modules`}
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+        >
+          <Boxes className="size-4" />
+          Modules
         </Link>
       </nav>
 

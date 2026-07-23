@@ -4,12 +4,15 @@ import { DealForm } from "@/components/app/deal-form";
 import { DealStatusActions } from "@/components/app/deal-status-actions";
 import { DeleteButton } from "@/components/app/delete-button";
 import { EntityTimeline } from "@/components/app/entity-timeline";
+import { LineItemsEditor } from "@/components/app/line-items-editor";
 import { getWorkspaceBySlug } from "@/lib/data/workspaces";
 import { getDeal } from "@/lib/data/deals";
 import { getPipelineWithStages } from "@/lib/data/pipelines";
 import { getFieldDefinitionsForEntity } from "@/lib/data/fields";
 import { listOrganizations } from "@/lib/data/organizations";
 import { listPersons } from "@/lib/data/persons";
+import { listLineItems } from "@/lib/data/line-items";
+import { listProducts } from "@/lib/data/products";
 import { deleteDeal } from "@/app/app/[workspace]/deals/actions";
 
 export default async function DealDetailPage({
@@ -32,6 +35,12 @@ export default async function DealDetailPage({
   ]);
 
   const stage = pipeline?.stages.find((s) => s.id === deal.stage_id);
+  const productsEnabled = ((workspace.enabled_modules as string[] | null) ?? []).includes(
+    "products",
+  );
+  const [lineItems, products] = productsEnabled
+    ? await Promise.all([listLineItems("deal", id), listProducts(workspace.id)])
+    : [[], []];
 
   return (
     <div className="flex max-w-3xl flex-col gap-6">
@@ -75,6 +84,23 @@ export default async function DealDetailPage({
           />
         </CardContent>
       </Card>
+
+      {productsEnabled ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Line items</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LineItemsEditor
+              workspaceSlug={slug}
+              entityType="deal"
+              entityId={id}
+              lineItems={lineItems}
+              products={products}
+            />
+          </CardContent>
+        </Card>
+      ) : null}
 
       <EntityTimeline
         workspaceSlug={slug}
