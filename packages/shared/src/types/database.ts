@@ -30,6 +30,16 @@ export type EmailSyncStatus = "not_connected" | "connected" | "error";
 
 export type EmailDirection = "outbound" | "inbound";
 
+export type OrderStatus =
+  | "draft"
+  | "confirmed"
+  | "in_production"
+  | "delivered"
+  | "invoiced"
+  | "paid";
+
+export type StandingOrderInterval = "weekly" | "biweekly" | "monthly";
+
 export interface Database {
   public: {
     Tables: {
@@ -218,6 +228,14 @@ export interface Database {
           name: string;
           owner_id: string | null;
           custom_fields: Json;
+          territory_id: string | null;
+          delivery_day: number | null;
+          account_type: string | null;
+          parent_organization_id: string | null;
+          payment_terms: string | null;
+          credit_limit: number | null;
+          outstanding_balance: number;
+          is_tax_exempt: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -227,6 +245,14 @@ export interface Database {
           name: string;
           owner_id?: string | null;
           custom_fields?: Json;
+          territory_id?: string | null;
+          delivery_day?: number | null;
+          account_type?: string | null;
+          parent_organization_id?: string | null;
+          payment_terms?: string | null;
+          credit_limit?: number | null;
+          outstanding_balance?: number;
+          is_tax_exempt?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -236,6 +262,14 @@ export interface Database {
           name?: string;
           owner_id?: string | null;
           custom_fields?: Json;
+          territory_id?: string | null;
+          delivery_day?: number | null;
+          account_type?: string | null;
+          parent_organization_id?: string | null;
+          payment_terms?: string | null;
+          credit_limit?: number | null;
+          outstanding_balance?: number;
+          is_tax_exempt?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -250,6 +284,18 @@ export interface Database {
             foreignKeyName: "organizations_owner_id_fkey";
             columns: ["owner_id"];
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "organizations_territory_id_fkey";
+            columns: ["territory_id"];
+            referencedRelation: "territories";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "organizations_parent_organization_id_fkey";
+            columns: ["parent_organization_id"];
+            referencedRelation: "organizations";
             referencedColumns: ["id"];
           },
         ];
@@ -1122,6 +1168,497 @@ export interface Database {
           },
         ];
       };
+      products: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          sku: string;
+          name: string;
+          description: string | null;
+          uom: string;
+          case_pack: number | null;
+          case_weight: number | null;
+          cost: number | null;
+          base_price: number;
+          is_active: boolean;
+          custom_fields: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          sku: string;
+          name: string;
+          description?: string | null;
+          uom?: string;
+          case_pack?: number | null;
+          case_weight?: number | null;
+          cost?: number | null;
+          base_price?: number;
+          is_active?: boolean;
+          custom_fields?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          sku?: string;
+          name?: string;
+          description?: string | null;
+          uom?: string;
+          case_pack?: number | null;
+          case_weight?: number | null;
+          cost?: number | null;
+          base_price?: number;
+          is_active?: boolean;
+          custom_fields?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "products_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      price_lists: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          name: string;
+          is_default: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          name: string;
+          is_default?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          name?: string;
+          is_default?: boolean;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "price_lists_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      price_list_items: {
+        Row: {
+          id: string;
+          price_list_id: string;
+          product_id: string;
+          price: number;
+          volume_tiers: Json;
+        };
+        Insert: {
+          id?: string;
+          price_list_id: string;
+          product_id: string;
+          price: number;
+          volume_tiers?: Json;
+        };
+        Update: {
+          id?: string;
+          price_list_id?: string;
+          product_id?: string;
+          price?: number;
+          volume_tiers?: Json;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "price_list_items_price_list_id_fkey";
+            columns: ["price_list_id"];
+            referencedRelation: "price_lists";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "price_list_items_product_id_fkey";
+            columns: ["product_id"];
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      account_price_overrides: {
+        Row: {
+          id: string;
+          organization_id: string;
+          product_id: string;
+          price: number | null;
+          discount_pct: number | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          product_id: string;
+          price?: number | null;
+          discount_pct?: number | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          product_id?: string;
+          price?: number | null;
+          discount_pct?: number | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "account_price_overrides_organization_id_fkey";
+            columns: ["organization_id"];
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "account_price_overrides_product_id_fkey";
+            columns: ["product_id"];
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      line_items: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          entity_type: string;
+          entity_id: string;
+          product_id: string | null;
+          description: string | null;
+          quantity: number;
+          unit_price: number;
+          unit_cost: number | null;
+          line_total: number;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          entity_type: string;
+          entity_id: string;
+          product_id?: string | null;
+          description?: string | null;
+          quantity?: number;
+          unit_price?: number;
+          unit_cost?: number | null;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          entity_type?: string;
+          entity_id?: string;
+          product_id?: string | null;
+          description?: string | null;
+          quantity?: number;
+          unit_price?: number;
+          unit_cost?: number | null;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "line_items_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "line_items_product_id_fkey";
+            columns: ["product_id"];
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      orders: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          organization_id: string;
+          deal_id: string | null;
+          po_number: string | null;
+          order_date: string;
+          requested_delivery_date: string | null;
+          status: OrderStatus;
+          tax_rate: number;
+          subtotal: number;
+          tax: number;
+          total: number;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          organization_id: string;
+          deal_id?: string | null;
+          po_number?: string | null;
+          order_date?: string;
+          requested_delivery_date?: string | null;
+          status?: OrderStatus;
+          tax_rate?: number;
+          subtotal?: number;
+          tax?: number;
+          total?: number;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          organization_id?: string;
+          deal_id?: string | null;
+          po_number?: string | null;
+          order_date?: string;
+          requested_delivery_date?: string | null;
+          status?: OrderStatus;
+          tax_rate?: number;
+          subtotal?: number;
+          tax?: number;
+          total?: number;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "orders_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "orders_organization_id_fkey";
+            columns: ["organization_id"];
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "orders_deal_id_fkey";
+            columns: ["deal_id"];
+            referencedRelation: "deals";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      standing_orders: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          organization_id: string;
+          name: string;
+          interval: StandingOrderInterval;
+          line_items_template: Json;
+          next_generation_date: string;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          organization_id: string;
+          name: string;
+          interval?: StandingOrderInterval;
+          line_items_template?: Json;
+          next_generation_date: string;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          organization_id?: string;
+          name?: string;
+          interval?: StandingOrderInterval;
+          line_items_template?: Json;
+          next_generation_date?: string;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "standing_orders_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "standing_orders_organization_id_fkey";
+            columns: ["organization_id"];
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      samples: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          organization_id: string;
+          person_id: string | null;
+          product_id: string;
+          dropped_date: string;
+          feedback: string | null;
+          follow_up_activity_id: string | null;
+          converted_order_id: string | null;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          organization_id: string;
+          person_id?: string | null;
+          product_id: string;
+          dropped_date?: string;
+          feedback?: string | null;
+          follow_up_activity_id?: string | null;
+          converted_order_id?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          organization_id?: string;
+          person_id?: string | null;
+          product_id?: string;
+          dropped_date?: string;
+          feedback?: string | null;
+          follow_up_activity_id?: string | null;
+          converted_order_id?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "samples_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "samples_organization_id_fkey";
+            columns: ["organization_id"];
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "samples_person_id_fkey";
+            columns: ["person_id"];
+            referencedRelation: "persons";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "samples_product_id_fkey";
+            columns: ["product_id"];
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "samples_follow_up_activity_id_fkey";
+            columns: ["follow_up_activity_id"];
+            referencedRelation: "activities";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "samples_converted_order_id_fkey";
+            columns: ["converted_order_id"];
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      territories: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          name: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          name: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          name?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "territories_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      distributor_sku_terms: {
+        Row: {
+          id: string;
+          organization_id: string;
+          product_id: string;
+          margin_pct: number | null;
+          listing_status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          product_id: string;
+          margin_pct?: number | null;
+          listing_status?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          product_id?: string;
+          margin_pct?: number | null;
+          listing_status?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "distributor_sku_terms_organization_id_fkey";
+            columns: ["organization_id"];
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "distributor_sku_terms_product_id_fkey";
+            columns: ["product_id"];
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       entity_labels: {
         Row: {
           label_id: string;
@@ -1170,6 +1707,14 @@ export interface Database {
         };
         Returns: undefined;
       };
+      recalculate_order_totals: {
+        Args: { p_order_id: string };
+        Returns: undefined;
+      };
+      generate_due_standing_orders: {
+        Args: { p_workspace_id: string };
+        Returns: number;
+      };
     };
     Enums: {
       workspace_role: WorkspaceRole;
@@ -1178,6 +1723,8 @@ export interface Database {
       recurrence_interval: RecurrenceInterval;
       email_sync_status: EmailSyncStatus;
       email_direction: EmailDirection;
+      order_status: OrderStatus;
+      standing_order_interval: StandingOrderInterval;
     };
   };
 }

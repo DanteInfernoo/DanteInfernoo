@@ -5,3 +5,4 @@ export * from "./deals";
 export * from "./activities";
 export * from "./mentions";
 export * from "./templates";
+export * from "./account-health";

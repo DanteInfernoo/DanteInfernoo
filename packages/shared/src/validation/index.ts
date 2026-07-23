@@ -208,6 +208,90 @@ export const savedFilterSchema = z.object({
 
 export type SavedFilterInput = z.infer<typeof savedFilterSchema>;
 
+export const productSchema = z.object({
+  sku: z.string().min(1, "SKU is required"),
+  name: z.string().min(1, "Name is required"),
+  description: z.string().optional(),
+  uom: z.string().min(1).default("each"),
+  case_pack: z.coerce.number().int().positive().optional(),
+  case_weight: z.coerce.number().positive().optional(),
+  cost: z.coerce.number().min(0).optional(),
+  base_price: z.coerce.number().min(0).default(0),
+});
+
+export type ProductInput = z.infer<typeof productSchema>;
+
+export const priceListSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+});
+
+export type PriceListInput = z.infer<typeof priceListSchema>;
+
+export const orderSchema = z.object({
+  organization_id: z.string().uuid(),
+  po_number: z.string().optional(),
+  order_date: z.string().min(1),
+  requested_delivery_date: z.string().optional().or(z.literal("")),
+  status: z.enum([
+    "draft",
+    "confirmed",
+    "in_production",
+    "delivered",
+    "invoiced",
+    "paid",
+  ]),
+  tax_rate: z.coerce.number().min(0).max(100).default(0),
+});
+
+export type OrderInput = z.infer<typeof orderSchema>;
+
+export const standingOrderSchema = z.object({
+  organization_id: z.string().uuid(),
+  name: z.string().min(1, "Name is required"),
+  interval: z.enum(["weekly", "biweekly", "monthly"]),
+  next_generation_date: z.string().min(1),
+});
+
+export type StandingOrderInput = z.infer<typeof standingOrderSchema>;
+
+export const sampleSchema = z.object({
+  organization_id: z.string().uuid(),
+  person_id: z.string().uuid().optional().or(z.literal("")),
+  product_id: z.string().uuid(),
+  dropped_date: z.string().min(1),
+  feedback: z.string().optional(),
+  follow_up_in_days: z.coerce.number().int().positive().optional(),
+});
+
+export type SampleInput = z.infer<typeof sampleSchema>;
+
+export const territorySchema = z.object({
+  name: z.string().min(1, "Name is required"),
+});
+
+export type TerritoryInput = z.infer<typeof territorySchema>;
+
+export const distributorTermsSchema = z.object({
+  product_id: z.string().uuid(),
+  margin_pct: z.coerce.number().min(0).max(100).optional(),
+  listing_status: z.enum(["listed", "pending", "delisted"]).default("pending"),
+});
+
+export type DistributorTermsInput = z.infer<typeof distributorTermsSchema>;
+
+export const commercialTermsSchema = z.object({
+  account_type: z.string().optional().or(z.literal("")),
+  parent_organization_id: z.string().uuid().optional().or(z.literal("")),
+  territory_id: z.string().uuid().optional().or(z.literal("")),
+  delivery_day: z.coerce.number().int().min(0).max(6).optional(),
+  payment_terms: z.string().optional().or(z.literal("")),
+  credit_limit: z.coerce.number().min(0).optional(),
+  outstanding_balance: z.coerce.number().min(0).default(0),
+  is_tax_exempt: z.boolean().default(false),
+});
+
+export type CommercialTermsInput = z.infer<typeof commercialTermsSchema>;
+
 export const labelSchema = z.object({
   entity_type: z.string().min(1),
   name: z.string().min(1),
