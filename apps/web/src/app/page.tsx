@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,11 +15,17 @@ export default function Home() {
         <CardHeader>
           <CardTitle>CRM Platform</CardTitle>
           <CardDescription>
-            Phase 0 scaffold — monorepo, Tailwind, and shadcn/ui are wired up.
+            Pipelines, contacts, and custom fields — configured per workspace,
+            not hardcoded.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <Button>It works</Button>
+        <CardContent className="flex gap-3">
+          <Button asChild>
+            <Link href="/signup">Get started</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/login">Sign in</Link>
+          </Button>
         </CardContent>
       </Card>
     </div>
