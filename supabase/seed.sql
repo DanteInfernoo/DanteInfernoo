@@ -64,6 +64,17 @@ values
   )
 on conflict do nothing;
 
+-- Belt-and-suspenders: normally public.profiles rows are created by the
+-- on_auth_user_created trigger (migration 0001) firing off the auth.users
+-- insert above. Some hosted Postgres configurations run trigger execution
+-- differently enough that relying on it alone during a bulk seed is
+-- fragile, so insert the rows directly too — harmless no-op if the
+-- trigger already created them.
+insert into public.profiles (id, email, full_name) values
+  ('11111111-1111-1111-1111-111111111111', 'demo@sunrisebakery.example', 'Alex Baker'),
+  ('11111111-1111-1111-1111-111111111112', 'rep@sunrisebakery.example', 'Jordan Rivera')
+on conflict (id) do nothing;
+
 -- ---------------------------------------------------------------------------
 -- Workspace + membership
 -- ---------------------------------------------------------------------------
